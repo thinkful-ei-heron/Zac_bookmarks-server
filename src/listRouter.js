@@ -59,23 +59,49 @@ listRouter
 
 	res.json(bookmark);
   })
-  .delete((req, res) => {
-    const { id } = req.params;
-    let deleteIndex = store.findIndex(item => item.id === id);
+//   .delete((req, res) => {
+//     const { id } = req.params;
+//     let deleteIndex = store.findIndex(item => item.id === id);
 
-    if (deleteIndex === -1) {
-       logger.error(`Bookmark with id ${id} not found.`);
-        return res
-        .status(404)
-        .send('Not found');
-    }
-    store.splice(deleteIndex, 1);
-    logger.info(`Bookmark with id ${id} deleted.`);
+//     if (deleteIndex === -1) {
+//        logger.error(`Bookmark with id ${id} not found.`);
+//         return res
+//         .status(404)
+//         .send('Not found');
+//     }
+//     store.splice(deleteIndex, 1);
+//     logger.info(`Bookmark with id ${id} deleted.`);
 
-    res
-      .status(204)
-      .end();
-  });
+//     res
+//       .status(204)
+//       .end();
+//   });
 
 
 module.exports = listRouter;
+
+
+
+
+// app.get('/bookmarks', (req, res, next) => {
+// 	const knexInstance = req.app.get('db');
+// 	BookmarkService.getAllBookmarks(knexInstance)
+// 		.then(bookmarks => {
+// 			res.json(bookmarks)
+// 		})
+// 		.catch(next);
+// })
+
+// app.get('/bookmarks/:bookmark_id', (req, res, next) => {
+// 	const knexInstance = req.app.get('db');
+// 	BookmarkService.getById(knexInstance, req.params.bookmark_id)
+// 		.then(article => {
+// 			if (!article) {
+// 				return res.status(404).json({
+// 					error: { message: `Bookmark doesn't exist` }
+// 				})
+// 			}
+// 			res.json(bookmarks)
+// 		})
+// 		.catch(next);
+// })

@@ -5,8 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const logger = require('./logger')
-const listRouter = require('./listRouter')
-
+const BookmarkService = require('./bookmark-service')
 
 const app = express()
 
@@ -42,10 +41,33 @@ app.use(function errorHandler(error, req, res, next) {
 //   next()
 // })
 
-app.use(listRouter)
-
 app.get('/', (req, res) => {
 	res.send('Hello beautiful!');
 })
+
+app.get('/bookmarks', (req, res, next) => {
+	const knexInstance = req.app.get('db');
+	BookmarkService.getAllBookmarks(knexInstance)
+		.then(bookmarks => {
+			res.json(bookmarks)
+		})
+		.catch(next);
+})
+
+app.get('/bookmarks/:bookmark_id', (req, res, next) => {
+	const knexInstance = req.app.get('db');
+	BookmarkService.getById(knexInstance, req.params.bookmark_id)
+		.then(bookmark => {
+			if (!bookmark) {
+				return res.status(404).json({
+					error: { message: `Bookmark doesn't exist` }
+				})
+			}
+			res.json(bookmark)
+		})
+		.catch(next);
+})
+
+// app.use(listRouter)
 
 module.exports = app
