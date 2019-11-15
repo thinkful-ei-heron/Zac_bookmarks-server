@@ -17,7 +17,7 @@ const serializedBookmark = bookmark => ({
 })
 
 listRouter
-  	.route('/bookmarks')
+  	.route('/')
   	.get((req, res, next) => {
 		BookmarkService.getAllBookmarks(
 			req.app.get('db')
@@ -66,14 +66,14 @@ listRouter
 			logger.info(`Bookmark with id ${id} created`);
 			res
 				.status(201)
-				.location(`/bookmarks/${bookmark.id}`)
+				.location(`/api/bookmarks/${bookmark.id}`)
 				.json(serializedBookmark(bookmark))
 		})
       	.catch(next)
 	});
 
 listRouter
-  	.route('/bookmarks/:bookmark_id')
+  	.route('/:bookmark_id')
   	.all((req, res, next) => {
 		const { bookmark_id } = req.params
 		BookmarkService.getById(
@@ -96,16 +96,36 @@ listRouter
 		res.json(serializedBookmark(res.bookmark))
 	})
 	.delete((req, res, next) => {
-		const { id } = req.params;
 		BookmarkService.deleteBookmark(
 			req.app.get('db'),
-			id
+			req.params.bookmark_id
 		)
 		.then(() => {
 			logger.info(`Bookmark with id ${id} deleted.`)
 			res.status(204).end()
 		})
 		.catch(next)
+	})
+	.patch(bodyParser, (req, res, next) => {
+		const { title, url, rating, description } = req.body;
+		const bookmarkToUpdate = { title, url, rating, description };
+
+		const numberOfValues = Object.values(bookmarkToUpdate).filter(Boolean).length;
+		if (numberOfValues === 0) {
+			return res.status(400).json(
+				{ error: { message: 'Request body must contain content' } }
+			);
+		}
+
+		BookmarkService.updateBookmark(
+			req.app.get('db'),
+			req.params.bookmark_id,
+			bookmarkToUpdate
+		)
+			.then(() => {
+				res.status(204).end()
+			})
+			.catch(next)
 	})
 
 module.exports = listRouter

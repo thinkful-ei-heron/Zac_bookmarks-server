@@ -30,7 +30,7 @@ app.use(express.json())
 //   next()
 // })
 
-app.use(listRouter);
+app.use('/api/bookmarks', listRouter);
 
 app.get('/', (req, res) => {
 	res.send('Hello beautiful!');
