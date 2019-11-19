@@ -139,119 +139,119 @@ describe('Bookmarks Endpoints', function() {
 		  })
 		})
 	
-		context('Given there are bookmarks in the database', () => {
-			const testBookmarks = makeBookmarkArray();
+		// context('Given there are bookmarks in the database', () => {
+		// 	const testBookmarks = makeBookmarkArray();
 	
-		  	beforeEach('insert bookmarks', () => {
-				return db
-			  		.into('bookmarks')
-			  		.insert(testBookmarks)
-		  	})
+		//   	beforeEach('insert bookmarks', () => {
+		// 		return db
+		// 	  		.into('bookmarks')
+		// 	  		.insert(testBookmarks)
+		//   	})
 	
-			// it('removes the bookmark by ID from the store', () => {
-			// 	const idToRemove = 2;
-			// 	const expectedBookmarks = testBookmarks.filter(bookmark => bookmark.id !== idToRemove);
-			// 	return supertest(app)
-			// 	.delete(`/api/bookmarks/${idToRemove}`)
-			// 	.expect(204)
-			// 	.then(res =>
-			// 		supertest(app)
-			// 			.get('/api/bookmarks')
-			// 			.expect(expectedBookmarks)
-			// 	)
-			// })
-		})
+		// 	it('responds with 204 and removes the bookmark', () => {
+		// 		const idToRemove = 2;
+		// 		const expectedBookmarks = testBookmarks.filter(bookmark => bookmark.id !== idToRemove);
+		// 		return supertest(app)
+		// 		.delete(`/api/bookmarks/${idToRemove}`)
+		// 		.expect(204)
+		// 		.then(res =>
+		// 			supertest(app)
+		// 				.get('/api/bookmarks')
+		// 				.expect(expectedBookmarks)
+		// 		)
+		// 	})
+		// })
 	})
 	
 	describe('POST /api/bookmarks', () => {
 		it('responds with 400 missing title if not supplied', () => {
-		  const newBookmarkMissingTitle = {
-			url: 'https://www.example.com',
-			rating: 1,
-		  }
-		  return supertest(app)
-			.post('/api/bookmarks')
-			.send(newBookmarkMissingTitle)
-			.expect(400, {
-			  error: { message: 'title is required' }
-			})
+		  	const newBookmarkMissingTitle = {
+				url: 'https://www.example.com',
+				rating: 1,
+		  	}
+		  	return supertest(app)
+				.post('/api/bookmarks')
+				.send(newBookmarkMissingTitle)
+				.expect(400,
+					{ error: { message: 'title is required' } }
+				)
 		})
 	
 		it('responds with 400 missing url if not supplied', () => {
-		  const newBookmarkMissingUrl = {
-			title: 'Test Title',
-			rating: 1,
-		  }
-		  return supertest(app)
-			.post(`/api/bookmarks`)
-			.send(newBookmarkMissingUrl)
-			.expect(400, {
-			  error: { message: 'url is required' }
-			})
+		  	const newBookmarkMissingUrl = {
+				title: 'Test Title',
+				rating: 1,
+		  	}
+		  	return supertest(app)
+				.post(`/api/bookmarks`)
+				.send(newBookmarkMissingUrl)
+				.expect(400,
+					{ error: { message: 'url is required' } }
+				)
 		})
 	
 		it('responds with 400 missing rating if not supplied', () => {
-		  const newBookmarkMissingRating = {
-			title: 'Test Title',
-			url: 'https://www.example.com',
-		  }
-		  return supertest(app)
-			.post('/api/bookmarks')
-			.send(newBookmarkMissingRating)
-			.expect(400, {
-			  error: { message: 'rating is required' }
-			})
+		  	const newBookmarkMissingRating = {
+				title: 'Test Title',
+				url: 'https://www.example.com',
+		  	}
+		  	return supertest(app)
+				.post('/api/bookmarks')
+				.send(newBookmarkMissingRating)
+				.expect(400,
+					{ error: { message: 'rating is required' } }
+				)
 		})
 	
 		it('responds with 400 invalid rating if not between 0 and 5', () => {
-		  const newBookmarkInvalidRating = {
-			title: 'test-title',
-			url: 'https://test.com',
-			rating: 'three',
-		  }
-		  return supertest(app)
-			.post('/api/bookmarks')
-			.send(newBookmarkInvalidRating)
-			.expect(400, {
-			  error: { message: 'rating must be a number between 0 and 5' }
-			})
+		  	const newBookmarkInvalidRating = {
+				title: 'test-title',
+				url: 'https://test.com',
+				rating: 'three',
+		  	}
+		  	return supertest(app)
+				.post('/api/bookmarks')
+				.send(newBookmarkInvalidRating)
+				.expect(400,
+					{ error: { message: 'rating must be a number between 0 and 5' } }
+				)
 		})
 	
 		it('adds a new bookmark to the store', () => {
-		  const newBookmark = {
-			title: 'test-title',
-			url: 'https://test.com',
-			description: 'test description',
-			rating: 1,
-		  }
-		  return supertest(app)
-			.post('/api/bookmarks')
-			.send(newBookmark)
-			.expect(201)
-			.expect(res => {
-			  expect(res.body.title).to.eql(newBookmark.title)
-			  expect(res.body.url).to.eql(newBookmark.url)
-			  expect(res.body.description).to.eql(newBookmark.description)
-			  expect(res.body.rating).to.eql(newBookmark.rating)
-			  expect(res.body).to.have.property('id')
-			  expect(res.headers.location).to.eql(`/api/bookmarks/${res.body.id}`)
-			})
-			.then(res =>
-			  supertest(app)
-				.get(`/api/bookmarks/${res.body.id}`)
-				.expect(res.body)
-			)
+		  	const newBookmark = {
+				title: 'test-title',
+				url: 'https://test.com',
+				description: 'test description',
+				rating: 1,
+		  	}
+		  	return supertest(app)
+				.post('/api/bookmarks')
+				.send(newBookmark)
+				.expect(201)
+				.expect(res => {
+					expect(res.body.title).to.eql(newBookmark.title)
+					expect(res.body.url).to.eql(newBookmark.url)
+					expect(res.body.description).to.eql(newBookmark.description)
+					expect(res.body.rating).to.eql(newBookmark.rating)
+					expect(res.body).to.have.property('id')
+					expect(res.headers.location).to.eql(`/api/bookmarks/${res.body.id}`)
+				})
+				.then(res =>
+				supertest(app)
+					.get(`/api/bookmarks/${res.body.id}`)
+					.expect(res.body)
+				)
 		})
 	
 		it('removes XSS attack content from response', () => {
-		  return supertest(app)
-			.post('/api/bookmarks')
-			.send(maliciousBookmark)
-			.expect(201)
-			.expect(res => {
-			  expect(res.body.title).to.eql(sanitizedBookmark.title)
-			  expect(res.body.description).to.eql(sanitizedBookmark.description)
-			})
+		  	return supertest(app)
+				.post('/api/bookmarks')
+				.send(maliciousBookmark)
+				.expect(201)
+				.expect(res => {
+					expect(res.body.title).to.eql(sanitizedBookmark.title)
+					expect(res.body.description).to.eql(sanitizedBookmark.description)
+				})
 		})
 	})
 

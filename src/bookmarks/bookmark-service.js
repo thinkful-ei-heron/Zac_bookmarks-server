@@ -21,12 +21,12 @@ const BookmarkService = {
 	deleteBookmark(knex, id) {
 		return knex('bookmarks')
 			.where({ id })
-			.delete()
+			.delete();
 	},
 	updateBookmark(knex, id, newBookmarkFields) {
 		return knex('bookmarks')
 			.where({ id })
-			.update(newBookmarkFields)
+			.update(newBookmarkFields);
 	}
 };
 

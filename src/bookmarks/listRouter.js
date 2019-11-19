@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const uuid = require('uuid/v4')
 const logger = require('../logger')
@@ -66,7 +67,7 @@ listRouter
 			logger.info(`Bookmark with id ${id} created`);
 			res
 				.status(201)
-				.location(`/api/bookmarks/${bookmark.id}`)
+				.location(path.posix.join(req.originalUrl, `/${bookmark.id}`))
 				.json(serializedBookmark(bookmark))
 		})
       	.catch(next)
@@ -75,7 +76,7 @@ listRouter
 listRouter
   	.route('/:bookmark_id')
   	.all((req, res, next) => {
-		const { bookmark_id } = req.params
+		const { bookmark_id } = req.params;
 		BookmarkService.getById(
 			req.app.get('db'),
 			bookmark_id
@@ -96,9 +97,10 @@ listRouter
 		res.json(serializedBookmark(res.bookmark))
 	})
 	.delete((req, res, next) => {
+		const { bookmark_id } = req.params;
 		BookmarkService.deleteBookmark(
 			req.app.get('db'),
-			req.params.bookmark_id
+			bookmark_id
 		)
 		.then(() => {
 			logger.info(`Bookmark with id ${id} deleted.`)
