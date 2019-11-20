@@ -102,9 +102,9 @@ listRouter
 			req.app.get('db'),
 			bookmark_id
 		)
-		.then(() => {
-			logger.info(`Bookmark with id ${id} deleted.`)
-			res.status(204).end()
+		.then(num => {
+			logger.info(`Bookmark with id ${bookmark_id} deleted.`)
+			res.status(204).json()
 		})
 		.catch(next)
 	})
